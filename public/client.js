@@ -11,8 +11,14 @@ let socket,//Socket.IO client
         return canvas;
     },
     resize = () => {
-        canvas.width = innerWidth;
-        canvas.height = innerHeight;
+        let x = canvas.width;
+
+        canvas.width = canvas.height;
+        canvas.height = x;
+
+        // canvas.width = innerHeight;
+        // canvas.height = innerWidth;
+        document.getElementById('message').innerHTML = canvas.width+', '+canvas.height
         if(game) game.resize();
     },
     canvas = Canvas(),
@@ -134,6 +140,8 @@ canvas.context.fillRect(0,0,innerWidth,innerHeight);
 
 document.getElementById('rightside').addEventListener('mousedown',(e)=>{heroPicked={x:e.clientX,y:e.clientY}},false);
 document.getElementById('rightside').addEventListener('touchstart',(e)=>{heroPicked={x:e.touches[0].clientX,y:e.touches[0].clientY}},false);
+
+addEventListener('orientationchange',resize);
 
 
 addControls();

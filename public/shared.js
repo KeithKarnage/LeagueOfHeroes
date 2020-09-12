@@ -1425,7 +1425,7 @@ let updateID = 1,
 			//  TO BE EASING FUNCTION (A[2] TAKES 0-1, RETURNS 0-1)
 			//  WITH ARGUMENT CUMULATIVE TIME OVER DURATION (A[7]/A[4] GIVES 0-1 COMPLETENESS OF ANIMATION)
 			//  MULTIPLY THAT BY THE DESIRED CHANGE(A[3]) AND ADD IT TO THE ORIGINAL POSITION (A[6])
-			// if(game.objects[A[0]]
+			if(game.objects[A[0]])
 			// && game.objects[A[0]][A[1]])
 				game.objects[A[0]][A[1]] = A[2](A[7]/A[4]) * A[3] + A[6];
 			// if(A[1] === 'mSpeed')
@@ -1439,7 +1439,7 @@ let updateID = 1,
 		})
 	},
 	registerAnimation = A => {
-		// if(game.objects[A[0]]
+		if(game.objects[A[0]])
 		// && game.objects[A[0]][A[1]])
 			animations.push([A[0],A[1],A[2],A[3],A[4],A[5],game.objects[A[0]][A[1]],0])
 	},
