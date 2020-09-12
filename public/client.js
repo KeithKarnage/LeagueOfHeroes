@@ -1,6 +1,6 @@
 "use strict";
 
-alert('Failed to load images from "http://www.opengamea... " \nerror code - 404: site not found \nFailed to load sounds from "http://www.freesound.c... " \nerror code - 404: site not found')
+alert('Failed to load images from "http://www.opengamea... " \nerror code - 404: file not found \nFailed to load sounds from "http://www.freesound.c... " \nerror code - 404: file not found')
 
 let socket,//Socket.IO client
     Canvas = (w = innerWidth, h = innerHeight) => {
