@@ -21,9 +21,9 @@ console.log('new game')
 		this.cam = new Obj({});
 
 		this.buttons = [
-			new Obj({x:100,y:100}),
-			new Obj({x:100,y:200}),
-			new Obj({x:100,y:300}),
+			new Obj({x:innerWidth - 100,y:100}),
+			new Obj({x:innerWidth - 100,y:200}),
+			new Obj({x:innerWidth - 100,y:300}),
 		];
 		// this.skillPrepped = null;
 		this.objIDs = {};
@@ -148,8 +148,9 @@ console.log('new game')
 		this.cam.size.x = this.screen.x/this.scale;
 		this.cam.size.y = this.screen.y/this.scale;
 		this.buttons.forEach(B => {
-			B.size.x = 16*this.scale;
-			B.size.y = 16*this.scale;
+			B.size.x = 12*this.scale;
+			B.size.y = 12*this.scale;
+			B.x = innerWidth - B.size.x;
 		});
 		
 
@@ -582,7 +583,7 @@ console.log('new game')
 
 					if(_obj.vel.mag() > 0.1
 					&& !isAnimated(_obj.id,'bounce'))
-						registerAnimation([_obj.id,'bounce',x=>x,_obj.size.y/2,125,[_obj.id,'bounce',x=>x,- _obj.size.y/2,125]])
+						registerAnimation([_obj.id,'bounce',easeOut,_obj.size.y/2,125,[_obj.id,'bounce',easeIn,- _obj.size.y/2,125]])
 				break;
 				//  PROJECTILES
 				case 1:
@@ -652,7 +653,7 @@ console.log('new game')
 						//  IF THERE IS NO TARGET, LOOK FOR ONE
 						if(!_obj.aTarget) {
 							_obj.findNearestEnemy();
-						}
+						};
 					
 						//  IF THERE IS NO ATTACK TARGET AND IT STILL HAS A PATH TO FOLLOW
 						if(!_obj.aTarget
@@ -668,8 +669,11 @@ console.log('new game')
 								_obj.path.shift();
 
 							// _obj.vel.copy(_obj.mTarget).sub(_obj.pos).unit().scl(_obj.mSpeed);
-						}
-					};
+						};
+						if(_obj.vel.mag() > 0.1
+						&& !isAnimated(_obj.id,'bounce'))
+							registerAnimation([_obj.id,'bounce',easeOut,_obj.size.y/2,125,[_obj.id,'bounce',easeIn,- _obj.size.y/2,125]])
+						};
 					//  OBJECT HAS ATTACK TARGET
 					if(_obj.aTarget) {
 						//  IS OUT OF ATTACK RANGE
@@ -1001,6 +1005,10 @@ console.log('new game')
 				if(B.parent) {
 
 					ctx.fillRect(B.pos.x-B.size.x/2,B.pos.y-B.size.y/2,B.size.x*(buttonCooldowns[this.player.id][B.parent]/skills[B.parent].cooldown),B.size.y)
+					// console.log(B.parent)
+					ctx.font = 2*game.scale+'px futura'
+					ctx.fillStyle = 'black'
+					ctx.fillText(' '+B.parent,B.x-B.size.x/2,B.y)
 				}
 
 			});
@@ -1443,7 +1451,10 @@ let updateID = 1,
 		// && game.objects[A[0]][A[1]])
 			animations.push([A[0],A[1],A[2],A[3],A[4],A[5],game.objects[A[0]][A[1]],0])
 	},
-	linear = x => x,
+	// linear = x => x,
+	easeIn = x => { return x*x*x },
+	easeOut = x => { return 1 - Math.pow(1 - x, 3) },
+	inOut = x => { return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2 },
 	anm,
 	isAnimated = (id,prop) => {
 		anm = false;
@@ -1505,7 +1516,7 @@ let updateID = 1,
 
     		},
     		activate: (id) => {	
-				registerAnimation([id,'mSpeed',linear,50,2000,[id,'mSpeed',linear,-50,2000,]]);
+				registerAnimation([id,'mSpeed',easeOut,50,2000,[id,'mSpeed',easeIn,-50,2000,]]);
 				buttonCooldowns[id].boots = skills.boots.cooldown;
 
 			},
@@ -1524,8 +1535,8 @@ let updateID = 1,
     		activate: (id,pos,skill='dash') => {
     			game.objects[id].mTarget.copy(pos);
     			_tVec.copy(pos).sub(game.objects[id].pos);
-    			registerAnimation([id,'x',linear,_tVec.x,250]);
-    			registerAnimation([id,'y',linear,_tVec.y,250]);
+    			registerAnimation([id,'x',inOut,_tVec.x,250]);
+    			registerAnimation([id,'y',inOut,_tVec.y,250]);
 				buttonCooldowns[id][skill] = skills[skill].cooldown;
 			
     		},
@@ -1554,8 +1565,8 @@ let updateID = 1,
 
     			// }
     		},
-    		cooldown: 2000,
-    		radius: 75
+    		cooldown: 6000,
+    		radius: 60
     	},
     	
     	
@@ -1664,7 +1675,7 @@ let updateID = 1,
     			}
 				buttonCooldowns[id][skill] = skills[skill].cooldown;
     		},
-    		cooldown: 2000,
+    		cooldown: 8000,
     		radius: 75
     	},
     	earthquake: {
@@ -1694,7 +1705,7 @@ let updateID = 1,
     			}
 				buttonCooldowns[id][skill] = skills[skill].cooldown;
     		},
-    		cooldown: 2000,
+    		cooldown: 12000,
     		radius: 75
     	}
     	
@@ -1762,7 +1773,7 @@ let updateID = 1,
 		    	}
 	    	},
 	    	affect: id => {
-	    		registerAnimation([id,'mSpeed',linear,-25,2000,[id,'mSpeed',linear,25,2000,]]);
+	    		registerAnimation([id,'mSpeed',inOut,-25,2000,[id,'mSpeed',inOut,25,2000,]]);
 	    	}
 	    },
 	    //. 2 - LEAF ATTACK
@@ -1824,7 +1835,7 @@ let updateID = 1,
 	    	},
 	    	//  SHOULD BE CALLED FOUR TIMES A SECOND FOR EACH OBJECT CAUGHT IN THE EFFECT
 	    	affect: id => {
-	    		game.objects[id].takeDamage(25);
+	    		game.objects[id].takeDamage(10);
 	    	},
 	    },
 	    //. 4 - ROCKFALL
@@ -1879,7 +1890,7 @@ let updateID = 1,
 
 		    	}
 	    	},
-	    	affect: id => {game.objects[id].takeDamage(10);},
+	    	affect: id => {game.objects[id].takeDamage(10)},
 
 	    }
     ],

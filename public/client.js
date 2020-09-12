@@ -49,11 +49,13 @@ let socket,//Socket.IO client
     },
     closeHeroes = () => {
         document.getElementById('images').style.width = 0;
-        document.getElementById('open').style.visibility = 'visible'
+        document.getElementById('open').style.visibility = 'visible';
+        document.getElementById('heroData').style.visibility = 'hidden';
     },
     openHeroes = () => {
         document.getElementById('images').style.width = '100%';
-        document.getElementById('open').style.visibility = 'hidden'
+        document.getElementById('open').style.visibility = 'hidden';
+        document.getElementById('heroData').style.visibility = 'visible';
     },
     hero = 0,
     heroPicked = null,
